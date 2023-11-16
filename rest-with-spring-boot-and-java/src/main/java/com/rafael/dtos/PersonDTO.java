@@ -1,48 +1,38 @@
-package com.rafael.model;
+package com.rafael.dtos;
 
 import java.io.Serializable;
 import java.util.Objects;
 
-import com.rafael.dtos.PersonDTO;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.rafael.model.Person;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
-@Entity
-@Table(name = "person")
-public class Person implements Serializable {
+@JsonPropertyOrder({"id", "firstName", "lastName", "address", "gender"}) // Selecionar a ordem da resposta do json
+public class PersonDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "first_name", nullable = false, length = 80)
+	@JsonProperty("fist-name")
 	private String firstName;
 
-	@Column(name = "last_name", nullable = false, length = 80)
 	private String lastName;
 
-	@Column(nullable = false, length = 300)
 	private String address;
 
-	@Column(nullable = false, length = 6)
 	private String gender;
 
-	public Person() {
+	public PersonDTO() {
 	}
 
-	public Person(PersonDTO personDTO) {
-		this.id = personDTO.getId();
-		this.firstName = personDTO.getFirstName();
-		this.lastName = personDTO.getLastName();
-		this.address = personDTO.getAddress();
-		this.gender = personDTO.getGender();
+	public PersonDTO(Person person) {
+		this.id = person.getId();
+		this.firstName = person.getFirstName();
+		this.lastName = person.getLastName();
+		this.address = person.getAddress();
+		this.gender = person.getGender();
 	}
 
 	public Long getId() {
@@ -98,7 +88,7 @@ public class Person implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Person other = (Person) obj;
+		PersonDTO other = (PersonDTO) obj;
 		return Objects.equals(address, other.address) && Objects.equals(firstName, other.firstName)
 				&& Objects.equals(gender, other.gender) && Objects.equals(id, other.id)
 				&& Objects.equals(lastName, other.lastName);

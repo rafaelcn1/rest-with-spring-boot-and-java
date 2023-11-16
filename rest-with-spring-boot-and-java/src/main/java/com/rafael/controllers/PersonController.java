@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.rafael.dtos.PersonDTO;
 import com.rafael.model.Person;
 import com.rafael.services.PersonService;
 
@@ -25,27 +26,27 @@ public class PersonController {
 	private PersonService personService;
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<Person> listAll() {
+	public List<PersonDTO> listAll() {
 		return this.personService.listAll();
 	}
 
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Person findById(@PathVariable(value = "id") Long id) {
+	public PersonDTO findById(@PathVariable(value = "id") Long id) {
 		return this.personService.findById(id);
 	}
 
 	@PostMapping(
 			produces = MediaType.APPLICATION_JSON_VALUE, //Vai produzir um JSON
 			consumes = MediaType.APPLICATION_JSON_VALUE) //Vai consumir um JSON
-	public Person create(@RequestBody Person person) {
-		return this.personService.create(person);
+	public PersonDTO create(@RequestBody PersonDTO personDTO) {
+		return this.personService.create(personDTO);
 	}
 
 	@PutMapping(
 			produces = MediaType.APPLICATION_JSON_VALUE, //Vai produzir um JSON
 			consumes = MediaType.APPLICATION_JSON_VALUE) //Vai consumir um JSON)	
-	public Person update(@RequestBody Person person) {
-		return this.personService.update(person);
+	public PersonDTO update(@RequestBody PersonDTO personDTO) {
+		return this.personService.update(personDTO);
 	}
 
 	@DeleteMapping(value = "/{id}")

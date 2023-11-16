@@ -2,10 +2,12 @@ package com.rafael.services;
 
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.rafael.dtos.PersonDTO;
 import com.rafael.exceptions.ResourceNotFoundException;
 import com.rafael.model.Person;
 import com.rafael.repositorys.PersonRepository;
@@ -18,38 +20,54 @@ public class PersonService {
 	@Autowired
 	private PersonRepository personRepository;
 
-	public Person findById(Long id) {
+	public PersonDTO findById(Long id) {
 		logger.info("Finding Person with id: " + id);
-		return this.personRepository.findById(id)
+		Person person = this.personRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("No records found for this id: " + id));
+		return new PersonDTO(person);
 	}
 
-	public List<Person> listAll() {
+	public List<PersonDTO> listAll() {
 		logger.info("Finding All Person!");
-		return this.personRepository.findAll();
+		List<Person> findAll = this.personRepository.findAll();
+		// ArrayList<PersonDTO> listAll = new ArrayList<PersonDTO>();
+
+		List<PersonDTO> listAll = findAll.stream().map(person -> {
+			PersonDTO personDTO = new PersonDTO(person);
+			// Adicione outros atributos conforme necessário
+			return personDTO;
+		}).collect(Collectors.toList());
+
+		return listAll;
 	}
 
-	public Person create(Person person) {
+	public PersonDTO create(PersonDTO personDTO) {
+		Person person = new Person(personDTO);
 		logger.info("Creating one person!");
-		return this.personRepository.save(person);
+		personDTO = new PersonDTO(this.personRepository.save(person));
+		return personDTO;
 	}
 
-	public Person update(Person person) {
-		logger.info("Updating person with id: " + person.getId());
-		Person findById = this.findById(person.getId());
-		
-		findById.setFirstName(person.getFirstName());
-		findById.setLastName(person.getLastName());
-		findById.setAddress(person.getAddress());
-		findById.setGender(person.getGender());
-		
-		return this.personRepository.save(findById);
+	public PersonDTO update(PersonDTO personDTO) {
+		logger.info("Updating person with id: " + personDTO.getId());
+		PersonDTO findById = this.findById(personDTO.getId());
+
+		findById.setFirstName(personDTO.getFirstName());
+		findById.setLastName(personDTO.getLastName());
+		findById.setAddress(personDTO.getAddress());
+		findById.setGender(personDTO.getGender());
+
+		Person person = new Person(findById);
+
+		personDTO = new PersonDTO(this.personRepository.save(person));
+		return personDTO;
 	}
 
 	public void delete(Long id) {
-		Person findById = this.findById(id);
+		PersonDTO personDTO = this.findById(id);
+		Person person = new Person(personDTO);
 		logger.info("Deleting person with id: " + id);
-		this.personRepository.delete(findById);
+		this.personRepository.delete(person);
 	}
 
 }
