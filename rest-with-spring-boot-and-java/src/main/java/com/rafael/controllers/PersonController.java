@@ -18,8 +18,11 @@ import com.rafael.dtos.PersonDTO;
 import com.rafael.model.Person;
 import com.rafael.services.PersonService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/person")
+@Tag(name = "People", description = "Endpoints for Managing People")
 public class PersonController {
 
 	@Autowired
